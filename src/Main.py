@@ -1,13 +1,14 @@
 import pygame
 from Logika import *
 
-KVADRAT = 100
+DIMENZIJA = 1000
+KVADRAT = DIMENZIJA/8
 SLIKE = {}
 
 def ucitajSlike():
     figure = ["bp", "bt", "bs", "bl", "bk", "bq", "cp", "ct", "cs", "cl", "cq", "ck"]
     for figura in figure:
-        SLIKE[figura] = pygame.transform.scale(pygame.image.load("./slike/" + figura + ".png"), (KVADRAT, KVADRAT))
+        SLIKE[figura] = pygame.transform.scale(pygame.image.load("./src/slike/" + figura + ".png"), (KVADRAT, KVADRAT))
 
 def nacrtajFigure(screen, ploca):
     for i in range(8):
@@ -27,13 +28,33 @@ def nacrtajPlocu(screen):
                     kvadrat.fill((118,150,86))
                     screen.blit(kvadrat, (i*KVADRAT, j*KVADRAT))
 
+def odaberiFiguru(poz):
+    xPoz, yPoz = poz
+    xPoz = xPoz / KVADRAT
+    yPoz = yPoz / KVADRAT
+    
+    return xPoz, yPoz
+    
+
+def staviFiguru(poz, figura, ploca):
+    nxPoz, nyPoz = poz
+    nxPoz = nxPoz / KVADRAT
+    nyPoz = nyPoz / KVADRAT
+
+    sxPoz, syPoz = figura
+
+    ploca[int(nyPoz)][int(nxPoz)] = ploca[int(syPoz)][int(sxPoz)]
+    ploca[int(syPoz)][int(sxPoz)] = "--"
+
 def main():
     pygame.init()
 
-    screen = pygame.display.set_mode((800, 800))
+    screen = pygame.display.set_mode((DIMENZIJA, DIMENZIJA))
     pygame.display.set_caption('Šah')
     clock = pygame.time.Clock()
     quit = False
+
+    odabrano = False
 
     ucitajSlike()
 
@@ -43,6 +64,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not odabrano:
+                    figura = odaberiFiguru(pygame.mouse.get_pos())
+                    odabrano = True
+                else:
+                    staviFiguru(pygame.mouse.get_pos(), figura, ploca.ploca)
+                    odabrano = False
 
         nacrtajPlocu(screen)
         nacrtajFigure(screen, ploca.ploca)
