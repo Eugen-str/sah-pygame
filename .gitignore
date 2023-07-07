@@ -1,3 +1,2 @@
 /.venv
-/figure.py
-/slike
+__pycache__/
