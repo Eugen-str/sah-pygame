@@ -32,6 +32,44 @@ class stanjeIgre:
 
             self.bijeliNaPotezu = not self.bijeliNaPotezu
 
+    def legalniPotezi(self):
+        return self.pseudoLegalniPotezi() # zasad...
+
+    # generiranje svih pseudolegalnih poteza (pseudolegalni - bez uzimanja šaha i šah-mata u obzir)
+    def pseudoLegalniPotezi(self):
+        potezi = []
+
+        for i in range(8):
+            for j in range(8):
+                if self.ploca[i][j][0] == "b" and self.bijeliNaPotezu or self.ploca[i][j] == "c" and not self.bijeliNaPotezu:
+                    figura = self.ploca[i][j][1]
+
+                    metode = {"p": self.legalniPijun(), "s": self.legalniSkakac(),
+                              "t": self.legalniTop(), "k": self.legalniKralj(),
+                              "l": self.legalniLovac(), "q": self.legalniKraljica()}
+
+                    potezi.append(metode[figura])
+
+        return potezi
+
+    def legalniPijun(self):
+        pass
+
+    def legalniTop(self):
+        pass
+
+    def legalniKraljica(self):
+        pass
+
+    def legalniKralj(self):
+        pass
+
+    def legalniLovac(self):
+        pass
+
+    def legalniSkakac(self):
+        pass
+
 class Potez:
     def __init__(self, kvPocetak, kvKraj, ploca):
         # red (1-8), linija (a-h)
@@ -43,6 +81,13 @@ class Potez:
 
         self.uzetaFigura = ploca[self.redZav][self.linZav]
         self.figura = ploca[self.redPoc][self.linPoc]
+
+        self.potezID = self.redPoc * 1000 + self.linPoc * 100 + self.redZav * 10 + self.linZav
+
+    def __eq__(self, other):
+        if isinstance(other, Potez):
+            return self.potezID == other.potezID
+        return False
 
     def genNotacija(self, stanje: stanjeIgre):
         uzeto = ""

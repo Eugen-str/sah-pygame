@@ -42,20 +42,26 @@ def nacrtajPlocu(screen, font):
 def main():
     pygame.init()
 
+    # inicijaliziranje pygame stvari
     ekran = pygame.display.set_mode((DIMENZIJA, DIMENZIJA))
     pygame.display.set_caption('Šah')
     sat = pygame.time.Clock()
-    kraj = False
     # font preuzet sa https://www.jetbrains.com/lp/mono/
     font = pygame.font.Font('../font/JetBrainsMono-Regular.ttf', int(KVADRAT // 3.5))
+
+    ucitajSlike()
+    kraj = False
+
+    # inicijaliziranje početnog stanja igre
+    stanje = stanjeIgre()
+    legalniPotezi = stanje.legalniPotezi()
+
     odabrano = False
 
     prviPotez = ()
-    drugiPotez = ()
 
-    ucitajSlike()
 
-    stanje = stanjeIgre()
+
 
     while not kraj:
         for event in pygame.event.get():
@@ -80,17 +86,18 @@ def main():
 
                     potez = Logika.Potez(prviPotez, drugiPotez, stanje.ploca)
 
-
-                    stanje.napraviPotez(potez)
-                    print(potez.genNotacija(stanje))
+                    if potez in legalniPotezi:
+                        stanje.napraviPotez(potez)
+                        print(potez.genNotacija(stanje))
 
                     prviPotez = ()
-                    drugiPotez = ()
                     odabrano = False
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
                     stanje.vratiPotez()
+
+
 
         nacrtajPlocu(ekran, font)
         nacrtajFigure(ekran, stanje.ploca)
