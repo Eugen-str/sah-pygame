@@ -9,5 +9,6 @@ Jednostavan šah u python-u pomoću pygame modula.
 ## Pokretanje:
 
 ```console
+$ pip install pygame
 $ python src/Main.py
 ```
