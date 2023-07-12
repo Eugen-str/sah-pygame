@@ -1,12 +1,13 @@
 import pygame
 import Logika
 
-from Logika import stanjeIgre
+from Logika import Stanjeigre
 
 MAX_FPS = 20
 DIMENZIJA = 800
 KVADRAT = DIMENZIJA / 8
 SLIKE = {}
+
 
 def ucitajSlike():
     figure = ["bp", "bt", "bs", "bl", "bk", "bq", "cp", "ct", "cs", "cl", "cq", "ck"]
@@ -36,8 +37,12 @@ def nacrtajPlocu(screen, font):
             if j == 0:
                 screen.blit(font.render("{}".format(i + 1), True, (18, 18, 18)), (0, i * KVADRAT))
             if i == 7:
-                screen.blit(font.render("{}".format(chr(j + ord('a'))), True, (18, 18, 18)), (j * KVADRAT, DIMENZIJA - KVADRAT / 3))
+                screen.blit(font.render("{}".format(chr(j + ord('a'))), True, (18, 18, 18)),
+                            (j * KVADRAT, DIMENZIJA - KVADRAT / 3))
 
+# crtanje "osjenčavanja" podloge ispod odabrane figure.
+def nacrtajPotez():
+    pass
 
 def main():
     pygame.init()
@@ -53,15 +58,15 @@ def main():
     kraj = False
 
     # inicijaliziranje početnog stanja igre
-    stanje = stanjeIgre()
+    stanje = Stanjeigre()
     legalniPotezi = stanje.legalniPotezi()
+
+    # provjera ispravnog broja mogućih poteza
+    # print(len(legalniPotezi))
 
     odabrano = False
 
     prviPotez = ()
-
-
-
 
     while not kraj:
         for event in pygame.event.get():
@@ -86,18 +91,23 @@ def main():
 
                     potez = Logika.Potez(prviPotez, drugiPotez, stanje.ploca)
 
+                    odabrano = False
+
                     if potez in legalniPotezi:
                         stanje.napraviPotez(potez)
                         print(potez.genNotacija(stanje))
-
-                    prviPotez = ()
-                    odabrano = False
+                        legalniPotezi = stanje.legalniPotezi()
+                    else:
+                        prviPotez = drugiPotez
+                        odabrano = True
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
                     stanje.vratiPotez()
+        # for event in pygame.event.get():
 
-
+        if odabrano:
+            nacrtajPotez(prviPotez)
 
         nacrtajPlocu(ekran, font)
         nacrtajFigure(ekran, stanje.ploca)
