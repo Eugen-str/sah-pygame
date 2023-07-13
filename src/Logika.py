@@ -55,14 +55,28 @@ class Stanjeigre:
 
         return potezi
 
+    # metoda za dodavanje svih legalnih poteza pijuna (bez en-passanta i promoviranja)
     def legalniPijun(self, red, linija, potezi):
         if self.bijeliNaPotezu:
             k = 1
+            c = "b"
         else:
             k = -1
-        potezi.append(Potez((linija, red), (linija, red - 1*k), self.ploca))
-        if red == 6 and self.bijeliNaPotezu or red == 1 and not self.bijeliNaPotezu:
-            potezi.append(Potez((linija, red), (linija, red - 2*k), self.ploca))
+            c = "c"
+
+        if red != 7 and red != 0:
+            if self.ploca[red - k][linija] == "--":
+                potezi.append(Potez((linija, red), (linija, red - k), self.ploca))
+
+            if linija > 0 and self.ploca[red - k][linija - 1] != "--" and self.ploca[red - k][linija - 1][0] != c:
+                potezi.append(Potez((linija, red), (linija - 1, red - k), self.ploca))
+
+            if linija < 7 and self.ploca[red - k][linija + 1] != "--" and self.ploca[red - k][linija + 1][0] != c:
+                potezi.append(Potez((linija, red), (linija + 1, red - k), self.ploca))
+
+            if red == 1 and not self.bijeliNaPotezu or red == 6 and self.bijeliNaPotezu and \
+                    self.ploca[red - k][linija] == "--" and self.ploca[red - 2 * k][linija] == "--":
+                potezi.append(Potez((linija, red), (linija, red - 2 * k), self.ploca))
 
     def legalniTop(self, red, linija, potezi):
         pass
