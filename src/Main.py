@@ -43,7 +43,7 @@ def nacrtajPlocu(screen, font):
                             (j * KVADRAT, DIMENZIJA - KVADRAT / 3))
 
 
-# crtanje "osjenčavanja" podloge ispod mogucih poteza za sve figure na ploči.
+# crtanje "osjenčavanja" podloge ispod mogucih poteza za sve figure na ploči
 def nacrtajSveMogucePoteze(ekran, legalniPotezi):
     kvadrat = pygame.Surface((KVADRAT, KVADRAT))
     for potez in legalniPotezi:
@@ -51,6 +51,18 @@ def nacrtajSveMogucePoteze(ekran, legalniPotezi):
         ekran.blit(kvadrat, (potez.linZav * KVADRAT, potez.redZav * KVADRAT))
         kvadrat.fill((160, 40, 40))
         ekran.blit(kvadrat, (potez.linPoc * KVADRAT, potez.redPoc * KVADRAT))
+
+# crtanje "osjenčavanja" podloge ispod mogucih poteza za odabranu figuru
+def nacrtajPotez(ekran, legalniPotezi, pocPotez):
+    linPotez, redPotez = pocPotez
+
+    kvadrat = pygame.Surface((KVADRAT, KVADRAT))
+    for p in legalniPotezi:
+        if p.linPoc == linPotez and p.redPoc == redPotez:
+            kvadrat.fill((255, 50, 50))
+            ekran.blit(kvadrat, (p.linZav * KVADRAT, p.redZav * KVADRAT))
+            kvadrat.fill((160, 40, 40))
+            ekran.blit(kvadrat, (p.linPoc * KVADRAT, p.redPoc * KVADRAT))
 
 
 def main():
@@ -69,6 +81,7 @@ def main():
     # inicijaliziranje početnog stanja igre
     stanje = Stanjeigre()
     legalniPotezi = stanje.legalniPotezi()
+    potez = ()
 
     # provjera ispravnog broja mogućih poteza
     # print(len(legalniPotezi))
@@ -117,6 +130,8 @@ def main():
 
         nacrtajPlocu(ekran, font)
         nacrtajSveMogucePoteze(ekran, legalniPotezi)
+        #if odabrano:
+        #    nacrtajPotez(ekran, legalniPotezi, prviPotez)
         nacrtajFigure(ekran, stanje.ploca)
 
         pygame.display.flip()

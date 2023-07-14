@@ -7,6 +7,7 @@ class Stanjeigre:
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["bt", "bs", "bl", "bq", "bk", "bl", "bs", "bt"]
         ]
@@ -51,8 +52,6 @@ class Stanjeigre:
 
                     metode[figura](i, j, potezi)
 
-                    # print(potezi[len(potezi) - 1].potezID)
-
         return potezi
 
     # metoda za dodavanje svih legalnih poteza pijuna (bez en-passanta i promoviranja)
@@ -74,12 +73,69 @@ class Stanjeigre:
             if linija < 7 and self.ploca[red - k][linija + 1] != "--" and self.ploca[red - k][linija + 1][0] != c:
                 potezi.append(Potez((linija, red), (linija + 1, red - k), self.ploca))
 
-            if red == 1 and not self.bijeliNaPotezu or red == 6 and self.bijeliNaPotezu and \
+            if (red == 1 and not self.bijeliNaPotezu or red == 6 and self.bijeliNaPotezu) and \
                     self.ploca[red - k][linija] == "--" and self.ploca[red - 2 * k][linija] == "--":
                 potezi.append(Potez((linija, red), (linija, red - 2 * k), self.ploca))
 
     def legalniTop(self, red, linija, potezi):
-        pass
+        c = "b" if self.bijeliNaPotezu else "c"
+
+        direkcije = ((1, 0), (0, 1), (-1, 0), (0, -1))
+
+        for d in direkcije:
+            for i in range(1, 8):
+                zavLin = linija + i*d[0]
+                zavRed = red + i*d[1]
+
+                if 0 <= zavLin <= 7 and 0 <= zavRed <= 7:
+                    if self.ploca[zavRed][zavLin] == "--":
+                        potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
+                    elif self.ploca[zavRed][zavLin] != c:
+                        potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
+                        break
+                    else:
+                        break
+                else:
+                    break
+
+#######################
+        """
+        for i in range(linija + 1, 8, 1):
+            if self.ploca[red][i] == "--":
+                potezi.append(Potez((linija, red), (i, red), self.ploca))
+            elif self.ploca[red][i][0] != c:
+                potezi.append(Potez((linija, red), (i, red), self.ploca))
+                break
+            else:
+                break
+
+        for i in range(linija - 1, -1, -1):
+            if self.ploca[red][i] == "--":
+                potezi.append(Potez((linija, red), (i, red), self.ploca))
+            elif self.ploca[red][i][0] != c:
+                potezi.append(Potez((linija, red), (i, red), self.ploca))
+                break
+            else:
+                break
+
+        for i in range(red + 1, 8, 1):
+            if self.ploca[i][linija] == "--":
+                potezi.append(Potez((linija, red), (linija, i), self.ploca))
+            elif self.ploca[i][linija][0] != c:
+                potezi.append(Potez((linija, red), (linija, i), self.ploca))
+                break
+            else:
+                break
+
+        for i in range(red - 1, -1, -1):
+            if self.ploca[i][linija] == "--":
+                potezi.append(Potez((linija, red), (linija, i), self.ploca))
+            elif self.ploca[i][linija][0] != c:
+                potezi.append(Potez((linija, red), (linija, i), self.ploca))
+                break
+            else:
+                break
+        """
 
     def legalniKraljica(self, red, linija, potezi):
         pass
