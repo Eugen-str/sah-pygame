@@ -76,20 +76,18 @@ class Stanjeigre:
                     self.ploca[red - k][linija] == "--" and self.ploca[red - 2 * k][linija] == "--":
                 potezi.append(Potez((linija, red), (linija, red - 2 * k), self.ploca))
 
-    def legalniTop(self, red, linija, potezi):
+    def legalniKlizeci(self, red, linija, potezi, direkcije):
         neprijatelj = "c" if self.bijeliNaPotezu else "b"
-
-        direkcije = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
         for d in direkcije:
             for i in range(1, 8):
-                zavLin = linija + i*d[0]
-                zavRed = red + i*d[1]
+                zavLin = linija + i * d[0]
+                zavRed = red + i * d[1]
 
                 if 0 <= zavLin <= 7 and 0 <= zavRed <= 7:
                     if self.ploca[zavRed][zavLin] == "--":
                         potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
-                    elif self.ploca[zavRed][zavLin] == neprijatelj:
+                    elif self.ploca[zavRed][zavLin][0] == neprijatelj:
                         potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
                         break
                     else:
@@ -97,17 +95,45 @@ class Stanjeigre:
                 else:
                     break
 
-    def legalniKraljica(self, red, linija, potezi):
-        pass
+    def legalniTop(self, red, linija, potezi):
+        direkcije = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
-    def legalniKralj(self, red, linija, potezi):
-        pass
+        self.legalniKlizeci(red, linija, potezi, direkcije)
+
+    def legalniKraljica(self, red, linija, potezi):
+        direkcije = ((1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1))
+
+        self.legalniKlizeci(red, linija, potezi, direkcije)
 
     def legalniLovac(self, red, linija, potezi):
-        pass
+        direkcije = ((1, 1), (-1, 1), (1, -1), (-1, -1))
+
+        self.legalniKlizeci(red, linija, potezi, direkcije)
+
+    def legalniOstali(self, red, linija, potezi, direkcije):
+        neprijatelj = "c" if self.bijeliNaPotezu else "b"
+
+        for d in direkcije:
+            zavLin = linija + d[0]
+            zavRed = red + d[1]
+
+            if 0 <= zavLin <= 7 and 0 <= zavRed <= 7:
+                if self.ploca[zavRed][zavLin] == "--":
+                    potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
+                elif self.ploca[zavRed][zavLin][0] == neprijatelj:
+                    potezi.append(Potez((linija, red), (zavLin, zavRed), self.ploca))
+
+    def legalniKralj(self, red, linija, potezi):
+        direkcije = ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1))
+
+        self.legalniOstali(red, linija, potezi, direkcije)
 
     def legalniSkakac(self, red, linija, potezi):
-        pass
+        direkcije = ((1, 2), (-1, 2), (1, -2), (-1, -2), (2, 1), (-2, 1), (2, -1), (-2, -1))
+
+        self.legalniOstali(red, linija, potezi, direkcije)
+
+
 
 
 class Potez:
@@ -134,5 +160,5 @@ class Potez:
         if self.uzetaFigura != "--":
             uzeto = "x"
 
-        return str(stanje.brojPoteza) + ". " + self.figura[1].upper() + uzeto + chr(self.linZav + ord('a')) + str(
-            self.redZav + 1)
+        return str(stanje.brojPoteza) + ". " + self.figura[1].upper() + uzeto + \
+            chr(self.linZav + ord('a')) + str(abs(8 - self.redZav))

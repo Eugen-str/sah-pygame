@@ -8,7 +8,15 @@ Jednostavan šah u python-u pomoću pygame modula.
 
 ## Pokretanje:
 
+Za pokretanje je potrebno imati instaliran [python](https://www.python.org/downloads/) i [pygame](https://www.pygame.org/news).
 ```console
 $ pip install pygame
-$ python src/Main.py
+```
+
+Pokretanje:
+
+```console
+$ git clone https://github.com/Eugen-str/sah-pygame.git
+$ cd sah-pygame/src
+$ python Main.py
 ```

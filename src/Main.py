@@ -11,6 +11,7 @@ SLIKE = {}
 BIJELA = (238, 238, 210)
 CRNA = (118, 150, 86)
 
+
 def ucitajSlike():
     figure = ["bp", "bt", "bs", "bl", "bk", "bq", "cp", "ct", "cs", "cl", "cq", "ck"]
     for figura in figure:
@@ -37,7 +38,7 @@ def nacrtajPlocu(screen, font):
                 screen.blit(kvadrat, (i * KVADRAT, j * KVADRAT))
 
             if j == 0:
-                screen.blit(font.render("{}".format(i + 1), True, (18, 18, 18)), (0, i * KVADRAT))
+                screen.blit(font.render("{}".format(abs(8 - i)), True, (18, 18, 18)), (0, i * KVADRAT))
             if i == 7:
                 screen.blit(font.render("{}".format(chr(j + ord('a'))), True, (18, 18, 18)),
                             (j * KVADRAT, DIMENZIJA - KVADRAT / 3))
@@ -52,6 +53,7 @@ def nacrtajSveMogucePoteze(ekran, legalniPotezi):
         kvadrat.fill((160, 40, 40))
         ekran.blit(kvadrat, (potez.linPoc * KVADRAT, potez.redPoc * KVADRAT))
 
+
 # crtanje "osjenčavanja" podloge ispod mogucih poteza za odabranu figuru
 def nacrtajPotez(ekran, legalniPotezi, pocPotez):
     linPotez, redPotez = pocPotez
@@ -63,6 +65,25 @@ def nacrtajPotez(ekran, legalniPotezi, pocPotez):
             ekran.blit(kvadrat, (p.linZav * KVADRAT, p.redZav * KVADRAT))
             kvadrat.fill((160, 40, 40))
             ekran.blit(kvadrat, (p.linPoc * KVADRAT, p.redPoc * KVADRAT))
+
+
+def nacrtajProsliPotez(ekran, listaPoteza):
+    zadnjiPotez = listaPoteza[len(listaPoteza) - 1]
+
+    kvadrat = pygame.Surface((KVADRAT, KVADRAT))
+    if (zadnjiPotez.linPoc + zadnjiPotez.redPoc) % 2 == 0:
+        boja = (199, 227, 134)
+    else:
+        boja = (227, 255, 161)
+    kvadrat.fill(boja)
+    ekran.blit(kvadrat, (zadnjiPotez.linZav * KVADRAT, zadnjiPotez.redZav * KVADRAT))
+
+    if (zadnjiPotez.linZav + zadnjiPotez.redZav) % 2 == 0:
+        boja = (199, 227, 134)
+    else:
+        boja = (227, 255, 161)
+    kvadrat.fill(boja)
+    ekran.blit(kvadrat, (zadnjiPotez.linPoc * KVADRAT, zadnjiPotez.redPoc * KVADRAT))
 
 
 def main():
@@ -126,17 +147,22 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
                     stanje.vratiPotez()
-        # for event in pygame.event.get():
+        # kraj petlje za evente
 
         nacrtajPlocu(ekran, font)
-        nacrtajSveMogucePoteze(ekran, legalniPotezi)
-        #if odabrano:
-        #    nacrtajPotez(ekran, legalniPotezi, prviPotez)
+
+        if len(stanje.listaPoteza) > 0:
+            nacrtajProsliPotez(ekran, stanje.listaPoteza)
+
+        # nacrtajSveMogucePoteze(ekran, legalniPotezi)
+        if odabrano:
+            nacrtajPotez(ekran, legalniPotezi, prviPotez)
+
         nacrtajFigure(ekran, stanje.ploca)
 
         pygame.display.flip()
         sat.tick(MAX_FPS)
-
+    # kraj glavne petlje
     pygame.quit()
 
 
